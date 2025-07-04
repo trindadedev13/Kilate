@@ -2,6 +2,7 @@
 
 #include <dirent.h>
 #include <dlfcn.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -128,8 +129,8 @@ klt_node* klt_native_print(klt_native_fndata* data) {
         *(klt_node_fnparam**)klt_vector_get(data->params, i);
     if (param->type == NODE_VALUE_TYPE_VAR) {
       klt_node* var = klt_environment_get(data->env, param->value);
-      void* value = var->vardec_n.varValue;
-      switch (var->vardec_n.varValueType) {
+      void* value = var->vardec_n.var_value;
+      switch (var->vardec_n.var_value_type) {
         case NODE_VALUE_TYPE_INT: {
           printf("%d", (int)(intptr_t)value);
           break;
@@ -146,7 +147,7 @@ klt_node* klt_native_print(klt_native_fndata* data) {
           printf("%s", (klt_str)value);
           break;
         case NODE_VALUE_TYPE_BOOL:
-          printf("%s", (bool)(intptr_t)value ? "true" : "false");
+          printf("%s", (klt_bool)(intptr_t)value ? "true" : "false");
           break;
         case NODE_VALUE_TYPE_FUNC:
           // Does nothing for now
@@ -174,8 +175,8 @@ klt_node* klt_native_system(klt_native_fndata* data) {
         *(klt_node_fnparam**)klt_vector_get(data->params, i);
     if (param->type == NODE_VALUE_TYPE_VAR) {
       klt_node* var = klt_environment_get(data->env, param->value);
-      void* value = var->vardec_n.varValue;
-      switch (var->vardec_n.varValueType) {
+      void* value = var->vardec_n.var_value;
+      switch (var->vardec_n.var_value_type) {
         case NODE_VALUE_TYPE_STRING:
           system((klt_str)value);
           break;
@@ -195,8 +196,7 @@ klt_node* klt_native_sleep(klt_native_fndata* data) {
       *(klt_node_fnparam**)klt_vector_get(data->params, 0);
   if (param->type == NODE_VALUE_TYPE_VAR) {
     klt_node* var = klt_environment_get(data->env, param->value);
-    void* value = var->vardec_n.varValue;
-    if (var->vardec_n.varValueType != NODE_VALUE_TYPE_INT) {
+    if (var->vardec_n.var_value_type != NODE_VALUE_TYPE_INT) {
       psleep((int)(intptr_t)param->value);
     }
   }

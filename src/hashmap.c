@@ -12,7 +12,7 @@ klt_hashmap* klt_hash_map_make(size_t itemSize) {
   hashMap->itemSize = itemSize;
   hashMap->capacity = 64;
   hashMap->itens = klt_vector_make(sizeof(klt_hashitem*));
-  for (int i = 0; i < hashMap->capacity; i++) {
+  for (size_t i = 0; i < hashMap->capacity; i++) {
     klt_hashitem* null_ptr = NULL;
     klt_vector_push_back(hashMap->itens, &null_ptr);
   }

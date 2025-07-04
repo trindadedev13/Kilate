@@ -34,11 +34,18 @@ klt_node_valuetype klt_parser_tokentype_to_nodevaluetype(klt_parser*,
 
 klt_node_valuetype klt_parser_str_to_nodevaluetype(klt_str);
 
-klt_node* klt_parser_parse_function(klt_parser*);
 
 klt_node* klt_parser_parse_statement(klt_parser*);
 
+klt_node_fnparam_vector* klt_parser_parse_fnparams(klt_parser* parser);
+
+void klt_parser_fn_validate_params(klt_node*, klt_node_fnparam_vector*, klt_token*);
+
+klt_node* klt_parser_parse_call_node(klt_parser*, klt_token*);
+
 void klt_parser_parse_program(klt_parser*);
+
+klt_node* klt_parser_parse_function(klt_parser*);
 
 void klt_parser_error(klt_token*, klt_str, ...);
 

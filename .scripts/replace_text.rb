@@ -1,6 +1,6 @@
 require "find"
 
-if not ARGV.length >= 2
+if ARGV.length < 3
   puts "Usage: ruby file.rb <base_dir> <old_text> <new_text>"
   exit 1
 end
@@ -79,13 +79,11 @@ end
 if $read_each_line
   lines = File.readlines($read_each_line_filename)
   lines.each do |line|
-    next if line.empty? || line.start_with?("#") || !line.include?(":")
+    next if line.empty? || line.start_with?("%") || !line.include?(":")
 
     old, new = line.split(/\s*:\s*/, 2)
-    if not use_line_break
-      old = old.gsub("\n", "")
-      new = new.gsub("\n", "")
-    end
+    old = old.strip unless use_line_break
+    new = new.strip unless use_line_break
     replace(old, new)
   end
 else

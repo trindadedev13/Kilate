@@ -1,8 +1,7 @@
 #ifndef __ENVIRONMENT_H__
 #define __ENVIRONMENT_H__
 
-#include <stdbool.h>
-
+#include "kilate/bool.h"
 #include "kilate/node.h"
 #include "kilate/string.h"
 
@@ -21,12 +20,12 @@ klt_environment* klt_environment_make(klt_environment* parent);
 
 void klt_environment_destroy(klt_environment* env);
 
-bool klt_environment_define(klt_environment* env,
+klt_bool klt_environment_define(klt_environment* env,
                             const klt_str name,
                             void* value);
 
 klt_node* klt_environment_get(klt_environment* env, const klt_str name);
 
-bool klt_environment_set(klt_environment* env, const klt_str name, void* value);
+klt_bool klt_environment_set(klt_environment* env, const klt_str name, void* value);
 
 #endif

@@ -39,27 +39,27 @@ struct klt_node {
   klt_nodetype type;
 
   struct {
-    klt_str name;
-    klt_str returnType;
-    klt_node_vector* body;
-    klt_node_fnparam_vector* params;
+    klt_str fn_name;
+    klt_str fn_return_type;
+    klt_node_vector* fn_body;
+    klt_node_fnparam_vector* fn_params;
   } function_n;
 
   struct {
-    klt_str functionName;
-    klt_node_fnparam_vector* functionParams;
+    klt_str fn_call_name;
+    klt_node_fnparam_vector* fn_call_params;
   } call_n;
 
   struct {
-    klt_node_valuetype returnType;
-    void* returnValue;
+    klt_node_valuetype return_type;
+    void* return_value;
   } return_n;
 
   struct {
-    klt_str varName;
-    klt_str varType;
-    klt_node_valuetype varValueType;
-    void* varValue;
+    klt_str var_name;
+    klt_str var_type;
+    klt_node_valuetype var_value_type;
+    void* var_value;
   } vardec_n;
 };
 

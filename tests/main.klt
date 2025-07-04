@@ -3,9 +3,9 @@ work kw_create_window(): long {
 }
 
 work main(): bool {
-  let window_ptr = kw_create_window()
-  print -> window_ptr, "\n"
-  print  <- "ayo"
+  // let window_ptr = kw_create_window()
+  // print -> window_ptr, "\n"
+  print  -> "ayo", "o"
   print  -> "\n"
   return <- true;
 }

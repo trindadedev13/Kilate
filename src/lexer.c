@@ -2,11 +2,13 @@
 
 #include <ctype.h>
 #include <stdarg.h>
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "kilate/bool.h"
 #include "kilate/error.h"
 #include "kilate/string.h"
 
@@ -43,7 +45,54 @@ klt_token* klt_token_make(klt_token_type type,
   return tk;
 }
 
-void klt_lexer_Advance(klt_lexer* lexer) {
+klt_str klt_tokentype_tostr(klt_token_type type) {
+  switch (type) {
+    case TOKEN_KEYWORD:
+      return "keyword";
+    case TOKEN_IDENTIFIER:
+      return "identifier";
+    case TOKEN_STRING:
+      return "string";
+    case TOKEN_LPAREN:
+      return "left_parenthesis";
+    case TOKEN_RPAREN:
+      return "right_parenthesis";
+    case TOKEN_LBRACE:
+      return "left_brace";
+    case TOKEN_RBRACE:
+      return "right_brace";
+    case TOKEN_RARROW:
+      return "right_arrow";
+    case TOKEN_LARROW:
+      return "left_arrow";
+    case TOKEN_COLON:
+      return "colon";
+    case TOKEN_TYPE:
+      return "type";
+    case TOKEN_BOOL:
+      return "boolean";
+    case TOKEN_INT:
+      return "int";
+    case TOKEN_FLOAT:
+      return "float";
+    case TOKEN_LONG:
+      return "double";
+    case TOKEN_COMMA:
+      return "comma";
+    case TOKEN_ASSIGN:
+      return "assign";
+    case TOKEN_LET:
+      return "let";
+    case TOKEN_VAR:
+      return "var";
+    case TOKEN_EOF:
+      return "end_of_file";
+    default:
+      return "unknow_token";
+  };
+}
+
+void klt_lexer_advance(klt_lexer* lexer) {
   if (lexer->__input__[lexer->__pos__] == '\n') {
     lexer->__line__++;
     lexer->__column__ = 1;
@@ -58,7 +107,7 @@ void klt_lexer_tokenize(klt_lexer* lexer) {
   while (lexer->__pos__ < inputLen) {
     char c = lexer->__input__[lexer->__pos__];
     if (isspace(c)) {
-      klt_lexer_Advance(lexer);
+      klt_lexer_advance(lexer);
       continue;
     }
 
@@ -69,7 +118,7 @@ void klt_lexer_tokenize(klt_lexer* lexer) {
         klt_token* token = klt_token_make(TOKEN_LPAREN, "(", tkl, tkc);
         klt_vector_push_back(lexer->tokens, &token);
 
-        klt_lexer_Advance(lexer);
+        klt_lexer_advance(lexer);
         continue;
       }
       case ')': {
@@ -78,7 +127,7 @@ void klt_lexer_tokenize(klt_lexer* lexer) {
         klt_token* token = klt_token_make(TOKEN_RPAREN, ")", tkl, tkc);
         klt_vector_push_back(lexer->tokens, &token);
 
-        klt_lexer_Advance(lexer);
+        klt_lexer_advance(lexer);
         continue;
       }
       case '{': {
@@ -87,7 +136,7 @@ void klt_lexer_tokenize(klt_lexer* lexer) {
         klt_token* token = klt_token_make(TOKEN_LBRACE, "{", tkl, tkc);
         klt_vector_push_back(lexer->tokens, &token);
 
-        klt_lexer_Advance(lexer);
+        klt_lexer_advance(lexer);
         continue;
       }
       case '}': {
@@ -96,7 +145,7 @@ void klt_lexer_tokenize(klt_lexer* lexer) {
         klt_token* token = klt_token_make(TOKEN_RBRACE, "}", tkl, tkc);
         klt_vector_push_back(lexer->tokens, &token);
 
-        klt_lexer_Advance(lexer);
+        klt_lexer_advance(lexer);
         continue;
       }
       case ':': {
@@ -105,7 +154,7 @@ void klt_lexer_tokenize(klt_lexer* lexer) {
         klt_token* token = klt_token_make(TOKEN_COLON, ":", tkl, tkc);
         klt_vector_push_back(lexer->tokens, &token);
 
-        klt_lexer_Advance(lexer);
+        klt_lexer_advance(lexer);
         continue;
       }
       case ',': {
@@ -114,7 +163,7 @@ void klt_lexer_tokenize(klt_lexer* lexer) {
         klt_token* token = klt_token_make(TOKEN_COMMA, ",", tkl, tkc);
         klt_vector_push_back(lexer->tokens, &token);
 
-        klt_lexer_Advance(lexer);
+        klt_lexer_advance(lexer);
         continue;
       }
       case '=': {
@@ -123,17 +172,17 @@ void klt_lexer_tokenize(klt_lexer* lexer) {
         klt_token* token = klt_token_make(TOKEN_ASSIGN, "=", tkl, tkc);
         klt_vector_push_back(lexer->tokens, &token);
 
-        klt_lexer_Advance(lexer);
+        klt_lexer_advance(lexer);
         continue;
       }
       case '\n': {
         // lexer->__line__++;
         //   lexer->__column__ = 1;
-        klt_lexer_Advance(lexer);
+        klt_lexer_advance(lexer);
         continue;
       }
       case ';': {
-        klt_lexer_Advance(lexer);
+        klt_lexer_advance(lexer);
         continue;
       }
     };
@@ -141,7 +190,7 @@ void klt_lexer_tokenize(klt_lexer* lexer) {
       lexer->__pos__ += 2;
       while (lexer->__pos__ < inputLen &&
              lexer->__input__[lexer->__pos__] != '\n') {
-        klt_lexer_Advance(lexer);
+        klt_lexer_advance(lexer);
       }
       continue;
     }
@@ -187,25 +236,25 @@ void klt_lexer_tokenize(klt_lexer* lexer) {
     }
     if (isdigit(c)) {
       size_t start = lexer->__pos__;
-      bool has_dot = false;
+      klt_bool has_dot = false;
       while (lexer->__pos__ < inputLen) {
         char ch = lexer->__input__[lexer->__pos__];
         if (isdigit(ch)) {
-          klt_lexer_Advance(lexer);
+          klt_lexer_advance(lexer);
         } else if (ch == '.' && !has_dot) {
           has_dot = true;
-          klt_lexer_Advance(lexer);
+          klt_lexer_advance(lexer);
         } else {
           break;
         }
       }
 
-      bool is_long = false;
+      klt_bool is_long = false;
       if (lexer->__pos__ < inputLen &&
           (lexer->__input__[lexer->__pos__] == 'l' ||
            lexer->__input__[lexer->__pos__] == 'L')) {
         is_long = true;
-        klt_lexer_Advance(lexer);
+        klt_lexer_advance(lexer);
       }
 
       klt_str number =
@@ -234,9 +283,9 @@ void klt_lexer_tokenize(klt_lexer* lexer) {
       size_t start = lexer->__pos__;
       while (lexer->__pos__ < inputLen &&
                  (isalpha(lexer->__input__[lexer->__pos__]) ||
-                  isdigit(lexer->__input__[lexer->__pos__])) ||
-             lexer->__input__[lexer->__pos__] == '_') {
-        klt_lexer_Advance(lexer);
+                  isdigit(lexer->__input__[lexer->__pos__]) ||
+             lexer->__input__[lexer->__pos__] == '_')) {
+        klt_lexer_advance(lexer);
       }
       klt_str word = klt_str_substring(lexer->__input__, start, lexer->__pos__);
       if (word == NULL) {

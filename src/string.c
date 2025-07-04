@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "kilate/bool.h"
 #include "kilate/error.h"
 
 size_t klt_str_length(klt_str str) {
@@ -13,7 +14,7 @@ size_t klt_str_length(klt_str str) {
   return len;
 }
 
-bool klt_str_starts_with(klt_str str, klt_str startWith, size_t offset) {
+klt_bool klt_str_starts_with(klt_str str, klt_str startWith, size_t offset) {
   if (strncmp(str + offset, startWith, klt_str_length(startWith)) == 0) {
     return true;
   }
@@ -44,7 +45,7 @@ klt_str klt_str_substring(const klt_str str, size_t start, size_t end) {
   return result;
 }
 
-bool klt_str_equals(const klt_str str, const klt_str other) {
+klt_bool klt_str_equals(const klt_str str, const klt_str other) {
   if (strcmp(str, other) == 0) {
     return true;
   }
@@ -57,7 +58,7 @@ void klt_str_concat(klt_str dest, const klt_str toConcat) {
 
 int klt_str_to_int(const klt_str src) {
   int num = 0;
-  int i = 0;
+  size_t i = 0;
   int sign = 1;
 
   if (src[0] == '-') {
