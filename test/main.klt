@@ -1,0 +1,7 @@
+pub work close() {
+  
+}
+
+pub work main(i32: argc, string[]: argv): bool {
+  close()
+}
